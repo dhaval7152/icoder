@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Blogpost{% endblock title %}
+
+{% block body %}
+<div class="container">
+<article class="blog-post m-3 p-3">
+    <h2 class="blog-post-title">{{post.title}}</h2>
+    <p class="blog-post-meta">{{post.timeStamp}} by <a href="/about">{{post.author}}</a></p>
+
+    <hr>
+    <p>{{post.content}}</p>
+   <img src="/media/{{post.image}}" alt="img">
+   {% comment %} <img src="{% /media/{{post.0image}} %}" alt="img"> {% endcomment %}
+  </article>
+</div>
+ {% endblock %}
