@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} BlogHome {% endblock title %}
+{% block title %} Search Results {% endblock title %}
 {% block blogactive %} active {% endblock blogactive %} 
 {% block style %}
 .img-thumbnail {
@@ -18,7 +18,13 @@
 
 {% block body %}
 <div class="container my-3">
-    <h2>Coding Articles by iCoder</h2>
+   
+<h2>Search Results For --"{{query}}"</h2>
+<hr>
+{% if allposts|length < 1 %}
+<h1>Sorry we have 0 search results for "{{query}}".
+Try again with another specific search term</h1> 
+{% endif %}
     {% for post in allposts  %}
     <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 my-4 position-relative">
         <div class="col p-4 d-flex flex-column position-static">

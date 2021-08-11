@@ -1,6 +1,10 @@
-from django.shortcuts import render, HttpResponse
+from django.db.models import query
+from django.shortcuts import redirect, render, HttpResponse
 from .models import Contact
 from django.contrib import messages
+from blog.models import Post
+from django.contrib.auth.models import User
+import time as t
 # Create your views here.
 def home(request): 
     return render(request,'home/home.html')
@@ -40,3 +44,77 @@ def contact(request):
 
 def about(request): 
     return render(request,'home/about.html')
+
+def search(request): 
+    query=request.GET['query']
+    if len(query)>78:
+        allposts = Post.objects.none()
+    else:
+        allpoststitle=Post.objects.filter(title__contains=query)
+        allpostscontent=Post.objects.filter(content__contains=query)
+        allpostsauthor=Post.objects.filter(content__contains=query)
+        allposts=allpostscontent.union(allpostscontent,allpostsauthor)
+    
+    if allposts.count() == 0:
+        messages.warning(request, 'Please search again with valid keyword.')
+    params={'allposts': allposts,'query':query}
+    return render(request,'home/search.html',params)
+
+def handlesignup(request):
+    if request.method=='POST':
+        username=request.POST['username']
+        fname=request.POST['fname']
+        lname=request.POST['lname']
+        email=request.POST['email']
+        pass1=request.POST['pass1']
+        pass2=request.POST['pass2']
+        
+        
+        
+    # check for errorneous input
+    if len(username)<10:
+        messages.error(request, " Your user name must be under 10 characters")
+        return redirect('home')
+
+    if not username.isalnum():
+        messages.error(request, " User name should only contain letters and numbers")
+        return redirect('home')
+    if (pass1!= pass2):
+            messages.error(request, " Passwords do not match")
+            return redirect('home')
+
+   
+    myuser=User.objects.create_user(username,email,pass1)
+    myuser.fname=fname
+    myuser.lname=lname
+    myuser.save()
+    messages.success(request,'Your account has been created {{Users.username}}')
+    t.sleep(2)
+    return redirect('/')
+
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+        # myuser = User.objects.create_user(username, email, pass1)
+        # myuser.first_name= fname
+        # myuser.last_name= lname
+        # myuser.save()
+        # messages.success(request, " Your account has been successfully created")
+        # return render(request,'home/home.html')
+
