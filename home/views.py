@@ -1,10 +1,12 @@
 from django.db.models import query
+from django.http import request
 from django.shortcuts import redirect, render, HttpResponse
 from .models import Contact
 from django.contrib import messages
 from blog.models import Post
 from django.contrib.auth.models import User
 import time as t
+from django.contrib.auth import authenticate,login,logout
 # Create your views here.
 def home(request): 
     return render(request,'home/home.html')
@@ -73,14 +75,14 @@ def handlesignup(request):
         
     # check for errorneous input
     if len(username)<10:
-        messages.error(request, " Your user name must be under 10 characters")
+        messages.error(request, "Your user name must be under 10 characters")
         return redirect('home')
 
     if not username.isalnum():
-        messages.error(request, " User name should only contain letters and numbers")
+        messages.error(request, "User name should only contain letters and numbers")
         return redirect('home')
     if (pass1!= pass2):
-            messages.error(request, " Passwords do not match")
+            messages.error(request, "Passwords do not match")
             return redirect('home')
 
    
@@ -92,7 +94,35 @@ def handlesignup(request):
     t.sleep(2)
     return redirect('/')
 
+  
+def handlelogin(request):
+    if request.method=='POST':
+        loginusername=request.POST['loginusername']    
+        loginpass=request.POST['loginpass']    
+        user = authenticate(username=loginusername, password=loginpass)
+        if user is not None:
+            login(request,user)
+            # messages.success(request,'{a}succefully log in.Welcome')
+            messages.success(request,"succefully log in.Welcome")
+            return redirect('/')
+            
+        else:
+            messages.error(request,'Invalid Credentails, Please try again')
+            return redirect('/')
+    return HttpResponse('404- Not found')
+
+
+          
+def handlelogout(request):
+    logout(request)
+    messages.success(request,"succefully logged Out")
+    return redirect('/')
+    return HttpResponse('handlelogout')
     
+    
+
+
+        
     
     
       
