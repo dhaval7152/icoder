@@ -74,25 +74,32 @@ def handlesignup(request):
         
         
     # check for errorneous input
-    if len(username)<10:
-        messages.error(request, "Your user name must be under 10 characters")
-        return redirect('home')
+    # if len(username)<10:
+    #     messages.error(request, "Your user name must be under 10 characters")
+    #     return redirect('home')
 
-    if not username.isalnum():
-        messages.error(request, "User name should only contain letters and numbers")
-        return redirect('home')
-    if (pass1!= pass2):
-            messages.error(request, "Passwords do not match")
-            return redirect('home')
+    # if not username.isalnum():
+    #     messages.error(request, "User name should only contain letters and numbers")
+    #     return redirect('home')
+    # if (pass1!= pass2):
+    #         messages.error(request, "Passwords do not match")
+    #         return redirect('home')
 
+  
    
-    myuser=User.objects.create_user(username,email,pass1)
+   
+   
+   
+    myuser=User.objects.create_user(username,fname,email)
     myuser.fname=fname
     myuser.lname=lname
+    myuser.email=email
     myuser.save()
     messages.success(request,'Your account has been created {{Users.username}}')
     t.sleep(2)
     return redirect('/')
+
+
 
   
 def handlelogin(request):
@@ -109,7 +116,7 @@ def handlelogin(request):
         else:
             messages.error(request,'Invalid Credentails, Please try again')
             return redirect('/')
-    return HttpResponse('404- Not found')
+    return render(request,'home/404.html')
 
 
           
@@ -119,7 +126,11 @@ def handlelogout(request):
     return redirect('/')
     return HttpResponse('handlelogout')
     
-    
+def edit_profile(request):
+    return render(request,'home/edit_profile.html')
+
+
+
 
 
         
@@ -141,10 +152,4 @@ def handlelogout(request):
       
       
       
-        # myuser = User.objects.create_user(username, email, pass1)
-        # myuser.first_name= fname
-        # myuser.last_name= lname
-        # myuser.save()
-        # messages.success(request, " Your account has been successfully created")
-        # return render(request,'home/home.html')
-
+       
